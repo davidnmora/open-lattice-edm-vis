@@ -11,7 +11,7 @@ export function configureStore(history, initialState) {
     const reducer = combineReducers({
         todos,
         visibilityFilter,
-        weatherReducer,
+        weatherReducerState: weatherReducer,
         routing: routerReducer
     })
 

@@ -60,9 +60,11 @@ class Weather extends React.Component {
 }
 
 export default connect(
+  // "mapStateToProps" (mapSTOREtoProps)
   state => ({
-    weatherState: state.weatherReducer
+    weatherState: state.weatherReducerState
   }),
+  // "mapDispatchToProps"
   dispatch => ({
     actions: bindActionCreators(weatherActions, dispatch)
   })

@@ -1,6 +1,8 @@
 import * as types from '../constants/ActionTypes'
 
 let nextTodoId = 0
+// actionCreator 
+// returns an object which is an action
 export const addTodo = text => {
   return {
     type: types.ADD_TODO,

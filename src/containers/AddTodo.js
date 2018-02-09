@@ -17,6 +17,20 @@ class AddTodo extends React.Component {
   }
 
   handleSubmit(e) {
+
+    // this = {
+    //   state: {
+    //     input
+    //   }
+    //   props: {
+    //     dispatch
+    // }
+    //   handleChange
+    //   handleSubmit
+    // }
+
+
+
     const { props: { dispatch }, state: { input } } = this
     e.preventDefault()
     if (!input.trim()) {
@@ -38,6 +52,7 @@ class AddTodo extends React.Component {
   }
 }
 
+// All connected components have the redux actions and states available to them
 AddTodo = connect()(AddTodo)
 
 export default AddTodo
