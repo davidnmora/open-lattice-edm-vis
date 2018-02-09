@@ -1,15 +1,12 @@
 import React from 'react'
 import Navigation from './Navigation'
-import logo from '../images/logo.svg'
 
 const Header = props =>
   <div className="c-header">
-    <img src={logo} className="c-header__logo" alt="create-react-redux-app-logo" />
-    <h2>Create React Redux App</h2>
+    <img src="https://openlattice.com/edm/static/assets/images/logo_and_name.4a631861.png" className="c-header__logo" alt="create-react-redux-app-logo" />
+    <h2>EDM</h2>
     <p>
-      <a href="https://github.com/yingray/create-react-redux-app">
-        https://github.com/yingray/create-react-redux-app
-      </a>
+      EDM visualization.
     </p>
     <Navigation />
   </div>
