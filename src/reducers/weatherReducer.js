@@ -1,9 +1,6 @@
 const initialState = {
   loading: false,
-  city: 'Initial',
-  date: 'Initial',
-  temp: 'Initial',
-  text: 'Initial'
+  graphData: undefined
 }
 
 const weatherReducer = (state = initialState, action) => {
@@ -14,14 +11,9 @@ const weatherReducer = (state = initialState, action) => {
       })
 
     case 'WEATHER_SHOW_WEATHER':
-      const location = action.response.query.results.channel.location
-      const condition = action.response.query.results.channel.item.condition
       return Object.assign({}, state, {
         loading: false,
-        city: location.city,
-        date: condition.date,
-        temp: condition.temp,
-        text: condition.text
+        graphData: action.graphData
       })
 
     default:

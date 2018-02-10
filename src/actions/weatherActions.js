@@ -1,19 +1,14 @@
-export const showWeather = response => ({
+export const showWeather = graphData => ({
   type: 'WEATHER_SHOW_WEATHER',
-  response
+  graphData
 })
 
 export const loadWeather = () => ({
   type: 'WEATHER_SHOW_LOADING'
 })
 
-export const getWeather = () => async dispatch => {
+export const getWeather = () => dispatch => {
   dispatch(loadWeather())
-  const dataTypes = {
-    PROPERTY:    0,
-    ENTITY:      1,
-    ASSOCIATION: 2
-  }
   const urls = [
     "https://api.openlattice.com/datastore/edm/property/type",
     "https://api.openlattice.com/datastore/edm/entity/type",
@@ -21,20 +16,23 @@ export const getWeather = () => async dispatch => {
   ]
   try {
     const edmPromises = urls.map(url => fetch(url).then(response => response.json()));
-    Promise.all(edmPromises).then(edmJSONs => {
-      console.log(edmJSONs)
+    Promise.all(edmPromises).then(edmJsons => {
+      console.log(edmJsons)
       let graphData = {
         nodes: [],
         links: [],
         nodesById: {} // In d3, links contain only sourId <-> targetId, so we need a map of nodeId -> node.
       }
-      for (const json of edmJSONs) addJSONToGraph(graphData, json)
+      for (const json of edmJsons) addJSONToGraph(graphData, json)
       // graphData.nodes now holds a non-redundant list of all nodes, populate nodes with it
       graphData.nodes = Object.values(graphData.nodesById)
+      // ERROR PREVENTION: in the event an id is listed as a property/src/dst, but doesn't exist, purge it (there seems to be 4 such ids)
+      graphData.links = graphData.links.filter(link => (link.source in graphData.nodesById) && (link.target in graphData.nodesById))
       console.log(graphData)
-
+      // console.log(JSON.stringify(graphData))
+      dispatch(showWeather(graphData)) 
     });
-    // dispatch(showWeather(response)) // BE SURE TO RE-ADD
+    
   } catch (e) {
     console.error(e)
     // TO DO: display error
@@ -42,8 +40,8 @@ export const getWeather = () => async dispatch => {
 }
 
 const addJSONToGraph = (graphData, entityJSON) => {
-  let skippedAssoc = 0
   for (const entity of entityJSON) {
+    if (entity.entityType) entity.id = entity.entityType.id // d3 needs every object to have an un-nested id property
     graphData.nodesById[entity.id || entity.entityType.id] = entity
     // Skip properties, who have no edge info
     if (entity.datatype) continue 
@@ -61,9 +59,15 @@ const addJSONToGraph = (graphData, entityJSON) => {
       addLink(entity.entityType.id, entity.dst, graphData.links) 
       continue
     } else {
-      console.error("FAULTY DATA ENTRY: not properly formatted to specs.", entity)
+      console.error("FAULTY DATA ENTRY: not properly formatted to specs: ", entity)
     }
   }
 }
 
-const addLink = (sourceId, targetId, links) => links.push({ source: sourceId, target: targetId })
+const addLink = (sourceId, targetId, links) => {
+  // Formatting: some Associations have src/dst: [id]
+  if (sourceId instanceof Array) sourceId = sourceId[0]
+  if (targetId instanceof Array) targetId = targetId[0]
+  // TO DO: do some entities have MULTIPE src/dst?
+  links.push({ source: sourceId, target: targetId })
+}

@@ -19,7 +19,7 @@ class Weather extends React.Component {
   }
 
   hasLoaded() {
-    return this.props.weatherState.city === 'Initial'
+    return this.props.weatherState.graphData === undefined
   }
 
   isLoading() {
@@ -36,18 +36,10 @@ class Weather extends React.Component {
   }
 
   Information() {
-    const { city, temp, date, text } = this.props.weatherState
+    const { graphData } = this.props.weatherState
     return (
       <div>
-        <h4>
-          {city} - {temp}&#8457;
-        </h4>
-        <p>
-          {date}
-        </p>
-        <p>
-          {text}
-        </p>
+        Working: { graphData.nodes[0].id }
       </div>
     )
   }
