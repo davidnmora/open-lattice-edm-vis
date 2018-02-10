@@ -13,6 +13,8 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "d3": "^4.13.0",
+    "d3-force": "^1.1.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-faux-dom": "^4.1.0"

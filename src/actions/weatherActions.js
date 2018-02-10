@@ -21,7 +21,7 @@ export const getWeather = () => dispatch => {
       let graphData = {
         nodes: [],
         links: [],
-        nodesById: {} // In d3, links contain only sourId <-> targetId, so we need a map of nodeId -> node.
+        nodesById: {} // In d3, links contain only sourId <-> targetId, so we need a map of nodeId -> node for meta info
       }
       for (const json of edmJsons) addJSONToGraph(graphData, json)
       // graphData.nodes now holds a non-redundant list of all nodes, populate nodes with it

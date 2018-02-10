@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as weatherActions from '../actions/weatherActions'
+import D3GraphVis from '../components/D3GraphVis'
 
 class Weather extends React.Component {
   constructor(props) {
@@ -32,14 +33,15 @@ class Weather extends React.Component {
 
   Button() {
     const { loading } = this.props.weatherState
-    return loading ? this.Spinner() : <button onClick={this.handleClick.bind(this)}>Click Me!</button>
+    return loading ? this.Spinner() : <button onClick={this.handleClick.bind(this)}>Load vis</button>
   }
 
   Information() {
     const { graphData } = this.props.weatherState
     return (
       <div>
-        Working: { graphData.nodes[0].id }
+        <p>Working: { graphData.nodes[0].id } </p>
+        <D3GraphVis />
       </div>
     )
   }
