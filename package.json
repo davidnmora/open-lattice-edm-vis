@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "react": "^15.6.1",
-    "react-dom": "^15.6.1"
+    "react-dom": "^15.6.1",
+    "react-faux-dom": "^4.1.0"
   },
   "devDependencies": {
     "api-book": "^0.2.4",
