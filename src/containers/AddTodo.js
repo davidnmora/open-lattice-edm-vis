@@ -17,20 +17,6 @@ class AddTodo extends React.Component {
   }
 
   handleSubmit(e) {
-
-    // this = {
-    //   state: {
-    //     input
-    //   }
-    //   props: {
-    //     dispatch
-    // }
-    //   handleChange
-    //   handleSubmit
-    // }
-
-
-
     const { props: { dispatch }, state: { input } } = this
     e.preventDefault()
     if (!input.trim()) {
