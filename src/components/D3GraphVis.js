@@ -89,7 +89,7 @@ class D3GraphVis extends React.Component {
         // Launch vis
         let nodes = graph.nodes
         let links = graph.links
-        let vis = DynamicGraph(d3.select(faux), { width: 1000 })
+        let vis = DynamicGraph(d3.select("body"), { width: 1000 })
           .nodeColor(nodeColor)
           // .nodeRadius(7)
           .tooltipInnerHTML(tooltipInnerHTML)

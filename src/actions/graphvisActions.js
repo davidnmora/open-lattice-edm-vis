@@ -30,8 +30,7 @@ export const getWeather = () => dispatch => {
     //   graphData.links = graphData.links.filter(link => (link.source in graphData.nodesById) && (link.target in graphData.nodesById))
     //   console.log(graphData)
     //   // console.log(JSON.stringify(graphData))
-    // TEMP
-      const graphData = { yo: "yo" }
+      const graphData = { yo: "yo" } // TEMP
       dispatch(showWeather(graphData)) 
     // });
     
