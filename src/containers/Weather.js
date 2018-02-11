@@ -40,7 +40,7 @@ class Weather extends React.Component {
     const { graphData } = this.props.weatherState
     return (
       <div>
-        <p>Working: { graphData.nodes[0].id } </p>
+        <p>Working: { graphData.yo } </p>
         <D3GraphVis />
       </div>
     )

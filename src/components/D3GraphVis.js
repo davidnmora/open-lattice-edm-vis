@@ -1,69 +1,110 @@
 import React from 'react'
 import * as d3 from 'd3'
-import {withFauxDOM} from 'react-faux-dom'
+import { withFauxDOM, animateFauxDOM } from 'react-faux-dom'
+import DynamicGraph from '../components/DynamicGraph'
 
 class D3GraphVis extends React.Component {
-  componentDidMount () {
-    
-    // BORING SETUP
-    let data = [{ "letter": "A", "frequency": 0.08167 }, { "letter": "B", "frequency": 0.01492 }, { "letter": "C", "frequency": 0.02782 }, { "letter": "D", "frequency": 0.04253 }, { "letter": "E", "frequency": 0.12702 }, { "letter": "F", "frequency": 0.02288 }, { "letter": "G", "frequency": 0.02015 }, { "letter": "H", "frequency": 0.06094 }, { "letter": "I", "frequency": 0.06966 }, { "letter": "J", "frequency": 0.00153 }, { "letter": "K", "frequency": 0.00772 }, { "letter": "L", "frequency": 0.04025 }, { "letter": "M", "frequency": 0.02406 }, { "letter": "N", "frequency": 0.06749 }, { "letter": "O", "frequency": 0.07507 }, { "letter": "P", "frequency": 0.01929 }, { "letter": "Q", "frequency": 0.00095 }, { "letter": "R", "frequency": 0.05987 }, { "letter": "S", "frequency": 0.06327 }, { "letter": "T", "frequency": 0.09056 }, { "letter": "U", "frequency": 0.02758 }, { "letter": "V", "frequency": 0.00978 }, { "letter": "W", "frequency": 0.0236 }, { "letter": "X", "frequency": 0.0015 }, { "letter": "Y", "frequency": 0.01974 }, { "letter": "Z", "frequency": 0.00074 }]
-    let margin = { top: 20, right: 20, bottom: 30, left: 40 },
-      width = 600 - margin.left - margin.right,
-      height = 600 - margin.top - margin.bottom;
-    let x = d3.scaleBand()
-      .rangeRound([0, width])
-    let y = d3.scaleLinear()
-      .range([height, 0])
+  componentDidMount() {
+    // SETUP CUSTOM FILTERING -------------------------------------------------------------------------
+    let minRadius = 7,
+      scaleRadiusDownBy = 5
+    const setNodeRadiusAndDegree = (node, graph) => {
+      if (node.radius !== undefined) return node.radius
+      node.degree = graph.links.filter(l => {
+        return l.source == node.id || l.target == node.id
+      }).length
+      node.radius = minRadius + (node.degree / scaleRadiusDownBy)
+    }
 
-    let xAxis = d3.axisBottom()
-      .scale(x)
-    let yAxis = d3.axisLeft()
-      .scale(y)
-      .ticks(10, "%");
+    let filterParams = {
+      sampleParam: true,
+    }
 
-    // KEY STEP: PASS CONNECTED COMPONENT TO props
-    // connectFauxDOM(node, nameInProps)
-    // This will store the node element and make it available via this.props[name]. 
-    // It also makes an asynchronous call to drawFauxDOM. The node can be a faux element or a string, 
-    // in which case a faux element is instantiated. The node is returned for convenience.
-    const faux = this.props.connectFauxDOM('div', 'chart')
-    let svg = d3.select(faux).append("svg") 
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+    // High-level filters
+    const shouldKeepNode = node => (node.index % 2) === 0 // For testing purposes
+    const shouldKeepLink = (nodesById, link) => {
+      const sourceNode = nodesById[link.sourceId]
+      const targetNode = nodesById[link.targetId]
+      return shouldKeepNode(sourceNode) && shouldKeepNode(targetNode)
+    }
 
-    x.domain(data.map((d) => d.letter));
-    y.domain([0, d3.max(data, (d) => d.frequency)]);
+    // Set node color based on type
+    const nodeColor = node => {
+      switch (getNodeInfo(node).category) {
+        case "AssociationType":
+          return "darkred"
+        case "EntityType":
+          return "skyblue"
+        case undefined:
+          return "#525252"
+        default:
+          console.error("ERROR: node improperly typed: ", node)
+          return "red"
+      }
+    }
 
-    svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", `translate(0,${height})`)
-      .call(xAxis);
+    // Tooltip display
+    const tooltipInnerHTML = node => {
+      return getNodeInfo(node).title
+    }
 
-    svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-      .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Frequency");
+    // PROJECT SPECIFIC HELPERS
+    const getNodeInfo = node => node.type ? node : node.entityType
 
-    svg.selectAll(".bar")
-      .data(data)
-      .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", (d) => x(d.letter))
-      .attr("width", 20)
-      .attr("y", (d) => y(d.frequency))
-      .attr("height", (d) => { return height - y(d.frequency) });
+    // 3. GET DATA, LUANCH VIS -------------------------------------------------------------------------
+    const graphDataJSONUrl = "https://raw.githubusercontent.com/davidnmora/open-lattice-edm-vis/master/graph-data.json"
+    Promise.all([
+      new Promise((res, rej) => d3.json(graphDataJSONUrl, function (error, JSONdata) { if (error) { rej(error) } else { res(JSONdata) } }))
+    ])
+      .then(([_graph]) => {
 
-    this.props.animateFauxDOM(8000) // WHAT DOES THIS DO?! (nothing)
+        // PROPERLY FORMAT DATA  
+        let graph = _graph
+        graph.nodesById = {}
+        let namespaceHist = {}
+        for (const node of graph.nodes) {
+          graph.nodesById[node.id] = node
+          let namespace = getNodeInfo(node).type.namespace
+          if (!namespaceHist[namespace]) namespaceHist[namespace] = 0
+          namespaceHist[namespace]++
+          setNodeRadiusAndDegree(node, graph)
+        }
+        console.log(namespaceHist)
+
+        for (const link of graph.links) {
+          link.sourceId = link.source
+          link.targetId = link.target
+        }
+
+        // KEY STEP: PASS CONNECTED COMPONENT TO props
+        // connectFauxDOM(node, nameInProps)
+        // This will store the node element and make it available via this.props[name]. 
+        // It also makes an asynchronous call to drawFauxDOM. The node can be a faux element or a string, 
+        // in which case a faux element is instantiated. The node is returned for convenience.
+        const faux = this.props.connectFauxDOM('div', 'chart')
+
+        // Launch vis
+        let nodes = graph.nodes
+        let links = graph.links
+        let vis = DynamicGraph(d3.select(faux), { width: 1000 })
+          .nodeColor(nodeColor)
+          .nodeRadius(node => node.radius)
+          .tooltipInnerHTML(tooltipInnerHTML)
+          .updateVis(nodes, links)
+
+        // Update vis (filter out half the nodes)
+        nodes = graph.nodes.filter(node => shouldKeepNode(node))
+        links = graph.links.filter(link => shouldKeepLink(graph.nodesById, link))
+        // setTimeout(() => vis.updateVis(nodes, links), 2000)
+
+        // Because d3 manually updates the DOM, transitions don't work.
+        // animateFauxDOM(forThisLong) rerenders ReactDOM every 16 ms to allow for d3 transitions
+        this.props.animateFauxDOM(10000) // TO DO: test this
+
+      }); // closes Primise.then(...)
   }
 
-  render () {
+  render() {
     return (
       <div>
         <div className='renderedD3'>
