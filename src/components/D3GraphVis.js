@@ -89,7 +89,7 @@ class D3GraphVis extends React.Component {
         // Launch vis
         let nodes = graph.nodes
         let links = graph.links
-        let vis = DynamicGraph(d3.select("body"), { width: 1000 })
+        let vis = DynamicGraph(d3.select("body" /*faux to attempt React integration*/), { width: window.innerWidth, height: 700 })
           .nodeColor(nodeColor)
           // .nodeRadius(7)
           .tooltipInnerHTML(tooltipInnerHTML)
@@ -102,7 +102,7 @@ class D3GraphVis extends React.Component {
 
         // Because d3 manually updates the DOM, transitions don't work.
         // animateFauxDOM(forThisLong) rerenders ReactDOM every 16 ms to allow for d3 transitions
-        this.props.animateFauxDOM(10000) // TO DO: test this
+        // this.props.animateFauxDOM(10000) 
 
       }); // closes Primise.then(...)
   }

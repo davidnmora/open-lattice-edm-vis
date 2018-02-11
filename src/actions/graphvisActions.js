@@ -15,24 +15,23 @@ export const getWeather = () => dispatch => {
     "https://api.openlattice.com/datastore/edm/association/type"
   ]
   try {
-    // const edmPromises = urls.map(url => fetch(url).then(response => response.json()));
-    // Promise.all(edmPromises).then(edmJsons => {
-    //   console.log(edmJsons)
-    //   let graphData = {
-    //     nodes: [],
-    //     links: [],
-    //     nodesById: {} // In d3, links contain only sourId <-> targetId, so we need a map of nodeId -> node for meta info
-    //   }
-    //   for (const json of edmJsons) addJSONToGraph(graphData, json)
-    //   // graphData.nodes now holds a non-redundant list of all nodes, populate nodes with it
-    //   graphData.nodes = Object.values(graphData.nodesById)
-    //   // ERROR PREVENTION: in the event an id is listed as a property/src/dst, but doesn't exist, purge it (there seems to be 4 such ids)
-    //   graphData.links = graphData.links.filter(link => (link.source in graphData.nodesById) && (link.target in graphData.nodesById))
-    //   console.log(graphData)
-    //   // console.log(JSON.stringify(graphData))
-      const graphData = { yo: "yo" } // TEMP
+    const edmPromises = urls.map(url => fetch(url).then(response => response.json()));
+    Promise.all(edmPromises).then(edmJsons => {
+      console.log(edmJsons)
+      let graphData = {
+        nodes: [],
+        links: [],
+        nodesById: {} // In d3, links contain only sourId <-> targetId, so we need a map of nodeId -> node for meta info
+      }
+      for (const json of edmJsons) addJSONToGraph(graphData, json)
+      // graphData.nodes now holds a non-redundant list of all nodes, populate nodes with it
+      graphData.nodes = Object.values(graphData.nodesById)
+      // ERROR PREVENTION: in the event an id is listed as a property/src/dst, but doesn't exist, purge it (there seems to be 4 such ids)
+      graphData.links = graphData.links.filter(link => (link.source in graphData.nodesById) && (link.target in graphData.nodesById))
+      console.log(graphData)
+      // console.log(JSON.stringify(graphData))
       dispatch(showWeather(graphData)) 
-    // });
+    });
     
   } catch (e) {
     console.error(e)

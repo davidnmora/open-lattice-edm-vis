@@ -40,7 +40,6 @@ class GraphVis extends React.Component {
     const { graphData } = this.props.graphvisState
     return (
       <div>
-        <p>Working: { graphData.yo } </p>
         <D3GraphVis />
       </div>
     )
