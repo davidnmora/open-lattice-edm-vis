@@ -6,9 +6,6 @@ const Navigation = ({ className, buttonClassName }) =>
     <Link className={buttonClassName} to="/">
       Home
     </Link>
-    <Link className={buttonClassName} to="todo">
-      Todo
-    </Link>
     <Link className={buttonClassName} to="weather">
       Weather
     </Link>
