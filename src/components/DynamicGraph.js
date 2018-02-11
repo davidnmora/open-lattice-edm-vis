@@ -117,10 +117,6 @@ const DynamicGraph = (d3SelectedVisContainer, optionalPubVars) => {
   }
 
   // 5. GRAPH VIS HELPER FUNCTIONS -------------------------------------------------------------------------
-  const radiusFromNode = d => {    
-    if(d.radius === undefined) d.radius = pubVar.minRadius 
-    return d.radius
-  }
 
   // 5. UPDATE GRAPH AFTER FILTERING DATA -------------------------------------------------------------------------
   function updateVis(nodes, links) {
@@ -190,7 +186,7 @@ const DynamicGraph = (d3SelectedVisContainer, optionalPubVars) => {
         }
        
       })
-      .call(node => { node.transition().duration(pubVar.transitionTime).attr("r", pubVar.nodeRadius); })
+      .call(node => { node.transition().duration(pubVar.transitionTime).attr("r", 7 /*pubVar.nodeRadius*/); })
       .call(
         d3
           .drag()

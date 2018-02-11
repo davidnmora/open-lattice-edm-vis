@@ -9,6 +9,9 @@ class D3GraphVis extends React.Component {
     let minRadius = 7,
       scaleRadiusDownBy = 5
     const setNodeRadiusAndDegree = (node, graph) => {
+      // TEMP HACK:
+      node.radius = 8
+      node.degree = 12
       if (node.radius !== undefined) return node.radius
       node.degree = graph.links.filter(l => {
         return l.source == node.id || l.target == node.id
@@ -88,7 +91,7 @@ class D3GraphVis extends React.Component {
         let links = graph.links
         let vis = DynamicGraph(d3.select(faux), { width: 1000 })
           .nodeColor(nodeColor)
-          .nodeRadius(node => node.radius)
+          // .nodeRadius(7)
           .tooltipInnerHTML(tooltipInnerHTML)
           .updateVis(nodes, links)
 
