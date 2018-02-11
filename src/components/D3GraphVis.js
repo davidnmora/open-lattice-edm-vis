@@ -19,10 +19,6 @@ class D3GraphVis extends React.Component {
       node.radius = minRadius + (node.degree / scaleRadiusDownBy)
     }
 
-    let filterParams = {
-      sampleParam: true,
-    }
-
     // High-level filters
     const shouldKeepNode = node => (node.index % 2) === 0 // For testing purposes
     const shouldKeepLink = (nodesById, link) => {
@@ -84,7 +80,7 @@ class D3GraphVis extends React.Component {
         // This will store the node element and make it available via this.props[name]. 
         // It also makes an asynchronous call to drawFauxDOM. The node can be a faux element or a string, 
         // in which case a faux element is instantiated. The node is returned for convenience.
-        const faux = this.props.connectFauxDOM('div', 'chart')
+        // const faux = this.props.connectFauxDOM('div', 'chart')
 
         // Launch vis
         let nodes = graph.nodes
@@ -110,16 +106,11 @@ class D3GraphVis extends React.Component {
   render() {
     return (
       <div>
-        <div className='renderedD3'>
-          {this.props.chart}
-        </div>
+        <div className='renderedD3'></div>
       </div>
     )
   }
 }
 
-D3GraphVis.defaultProps = {
-  chart: 'loading'
-}
 
 export default withFauxDOM(D3GraphVis)

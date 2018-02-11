@@ -32,11 +32,13 @@ class GraphVis extends React.Component {
   }
 
   Button() {
+    if (document.querySelector("svg")) return
     const { loading } = this.props.graphvisState
     return loading ? this.Spinner() : <button onClick={this.handleClick.bind(this)}>Load vis</button>
   }
 
   Information() {
+    if (document.querySelector("svg")) return
     const { graphData } = this.props.graphvisState
     return (
       <div>
