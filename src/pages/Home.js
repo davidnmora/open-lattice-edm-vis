@@ -2,9 +2,10 @@ import React from 'react'
 
 const HomePage = () => {
   const content = {
-    title: 'Welcome to CRRS-APP',
+    title: 'What exactly is the OpenLattice Entity Data Model (EDM)?',
     article:
-      'This project was bootstrapped with Create React App and Redux + SASS Structure.'
+      'Glad you asked. EDM is the backbone how OpenLattice enables you to explore, share, and understand data. In short, it turns data mess into data magic.',
+    article2: "yo"
   }
 
   return (
@@ -14,6 +15,9 @@ const HomePage = () => {
       </h3>
       <article className="p-home__article">
         {content.article}
+      </article>
+      <article className="p-home__article">
+        {content.article2}
       </article>
     </main>
   )

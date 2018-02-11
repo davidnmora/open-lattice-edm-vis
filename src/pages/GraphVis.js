@@ -1,10 +1,10 @@
 import React from 'react'
-import Weather from '../containers/Weather'
+import GraphVis from '../containers/GraphVis'
 
 const WeatherPage = () =>
   <main>
     <h3>Graph of EDM</h3>
-    <Weather />
+    <GraphVis />
   </main>
 
 export default WeatherPage

@@ -3,7 +3,7 @@ const initialState = {
   graphData: undefined
 }
 
-const weatherReducer = (state = initialState, action) => {
+const graphvisReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'WEATHER_SHOW_LOADING':
       return Object.assign({}, state, {
@@ -21,4 +21,4 @@ const weatherReducer = (state = initialState, action) => {
   }
 }
 
-export default weatherReducer
+export default graphvisReducer

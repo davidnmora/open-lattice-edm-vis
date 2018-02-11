@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import * as weatherActions from '../actions/weatherActions'
+import * as graphvisActions from '../actions/graphvisActions'
 import D3GraphVis from '../components/D3GraphVis'
 
-class Weather extends React.Component {
+class GraphVis extends React.Component {
   constructor(props) {
     super(props)
     this.handleClick = this.handleClick.bind(this)
@@ -20,24 +20,24 @@ class Weather extends React.Component {
   }
 
   hasLoaded() {
-    return this.props.weatherState.graphData === undefined
+    return this.props.graphvisState.graphData === undefined
   }
 
   isLoading() {
-    return this.props.weatherState.loading
+    return this.props.graphvisState.loading
   }
 
   Spinner() {
-    return <div className="c-weather__spinner"></div>
+    return <div className="c-graphvis__spinner"></div>
   }
 
   Button() {
-    const { loading } = this.props.weatherState
+    const { loading } = this.props.graphvisState
     return loading ? this.Spinner() : <button onClick={this.handleClick.bind(this)}>Load vis</button>
   }
 
   Information() {
-    const { graphData } = this.props.weatherState
+    const { graphData } = this.props.graphvisState
     return (
       <div>
         <p>Working: { graphData.yo } </p>
@@ -56,10 +56,10 @@ class Weather extends React.Component {
 export default connect(
   // "mapStateToProps" (mapSTOREtoProps)
   state => ({
-    weatherState: state.weatherReducerState
+    graphvisState: state.graphvisReducerState
   }),
   // "mapDispatchToProps"
   dispatch => ({
-    actions: bindActionCreators(weatherActions, dispatch)
+    actions: bindActionCreators(graphvisActions, dispatch)
   })
-)(Weather)
+)(GraphVis)

@@ -2,12 +2,12 @@ import { createStore, combineReducers, compose, applyMiddleware } from 'redux'
 import { routerReducer, routerMiddleware } from 'react-router-redux'
 import thunkMiddleware from 'redux-thunk'
 
-import weatherReducer from './reducers/weatherReducer'
+import graphvisReducer from './reducers/graphvisReducer'
 
 export function configureStore(history, initialState) {
 
     const reducer = combineReducers({
-        weatherReducerState: weatherReducer,
+        graphvisReducerState: graphvisReducer,
         routing: routerReducer
     })
 

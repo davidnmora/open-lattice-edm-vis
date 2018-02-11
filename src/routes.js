@@ -2,13 +2,13 @@ import React from 'react'
 import { Route, IndexRoute } from 'react-router'
 import App from './components/App'
 import Home from './pages/Home'
-import Weather from './pages/Weather'
+import GraphVis from './pages/GraphVis'
 
 const routes = (
   <Route path="/" component={App}>
     <IndexRoute component={Home} />
     <Route path="home" component={Home} />
-    <Route path="weather" component={Weather} />
+    <Route path="graphvis" component={GraphVis} />
   </Route>
 )
 
