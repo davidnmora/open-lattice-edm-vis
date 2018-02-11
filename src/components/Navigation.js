@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 const Navigation = ({ className, buttonClassName }) =>
   <nav className={className}>
     <Link className={buttonClassName} to="/">
-      Home
+      About the EDM
     </Link>
     <Link className={buttonClassName} to="graphvis">
       Graph Vis

@@ -1,17 +1,13 @@
 import React from 'react'
 import * as d3 from 'd3'
-import { withFauxDOM, animateFauxDOM } from 'react-faux-dom'
 import DynamicGraph from '../components/DynamicGraph'
 
 class D3GraphVis extends React.Component {
   componentDidMount() {
-    // SETUP CUSTOM FILTERING -------------------------------------------------------------------------
-    let minRadius = 7,
-      scaleRadiusDownBy = 5
+    // CUSTOM FILTERING AND DATA PROCESSING FUNCTIONS -------------------------------------------------------------------------
     const setNodeRadiusAndDegree = (node, graph) => {
-      // TEMP HACK:
-      node.radius = 8
-      node.degree = 12
+      const minRadius = 7,
+      scaleRadiusDownBy = 5
       if (node.radius !== undefined) return node.radius
       node.degree = graph.links.filter(l => {
         return l.source == node.id || l.target == node.id
@@ -51,56 +47,35 @@ class D3GraphVis extends React.Component {
     const getNodeInfo = node => node.type ? node : node.entityType
 
     // 3. GET DATA, LUANCH VIS -------------------------------------------------------------------------
-    const graphDataJSONUrl = "https://raw.githubusercontent.com/davidnmora/open-lattice-edm-vis/master/graph-data.json"
-    Promise.all([
-      new Promise((res, rej) => d3.json(graphDataJSONUrl, function (error, JSONdata) { if (error) { rej(error) } else { res(JSONdata) } }))
-    ])
-      .then(([_graph]) => {
+    // PROPERLY FORMAT DATA  
+    let graph = this.props.graphData
+    graph.nodesById = {}
+    let namespaceHist = {} // TO DO: display namespace histograph, dynamically highlighting nodes on hover
+    for (const node of graph.nodes) {
+      graph.nodesById[node.id] = node
+      let namespace = getNodeInfo(node).type.namespace
+      if (!namespaceHist[namespace]) namespaceHist[namespace] = 0
+      namespaceHist[namespace]++
+      setNodeRadiusAndDegree(node, graph)
+    }
 
-        // PROPERLY FORMAT DATA  
-        let graph = _graph
-        graph.nodesById = {}
-        let namespaceHist = {}
-        for (const node of graph.nodes) {
-          graph.nodesById[node.id] = node
-          let namespace = getNodeInfo(node).type.namespace
-          if (!namespaceHist[namespace]) namespaceHist[namespace] = 0
-          namespaceHist[namespace]++
-          setNodeRadiusAndDegree(node, graph)
-        }
-        console.log(namespaceHist)
+    for (const link of graph.links) {
+      link.sourceId = link.source
+      link.targetId = link.target
+    }
 
-        for (const link of graph.links) {
-          link.sourceId = link.source
-          link.targetId = link.target
-        }
+    // Launch vis
+    let nodes = graph.nodes
+    let links = graph.links
+    let vis = DynamicGraph(d3.select("body" /*faux to attempt React integration*/), { width: window.innerWidth, height: 700 })
+      .nodeColor(nodeColor)
+      .tooltipInnerHTML(tooltipInnerHTML)
+      .updateVis(nodes, links)
 
-        // KEY STEP: PASS CONNECTED COMPONENT TO props
-        // connectFauxDOM(node, nameInProps)
-        // This will store the node element and make it available via this.props[name]. 
-        // It also makes an asynchronous call to drawFauxDOM. The node can be a faux element or a string, 
-        // in which case a faux element is instantiated. The node is returned for convenience.
-        // const faux = this.props.connectFauxDOM('div', 'chart')
-
-        // Launch vis
-        let nodes = graph.nodes
-        let links = graph.links
-        let vis = DynamicGraph(d3.select("body" /*faux to attempt React integration*/), { width: window.innerWidth, height: 700 })
-          .nodeColor(nodeColor)
-          // .nodeRadius(7)
-          .tooltipInnerHTML(tooltipInnerHTML)
-          .updateVis(nodes, links)
-
-        // Update vis (filter out half the nodes)
-        nodes = graph.nodes.filter(node => shouldKeepNode(node))
-        links = graph.links.filter(link => shouldKeepLink(graph.nodesById, link))
-        // setTimeout(() => vis.updateVis(nodes, links), 2000)
-
-        // Because d3 manually updates the DOM, transitions don't work.
-        // animateFauxDOM(forThisLong) rerenders ReactDOM every 16 ms to allow for d3 transitions
-        // this.props.animateFauxDOM(10000) 
-
-      }); // closes Primise.then(...)
+    // Test updating vis (filter out half the nodes)
+    // nodes = graph.nodes.filter(node => shouldKeepNode(node))
+    // links = graph.links.filter(link => shouldKeepLink(graph.nodesById, link))
+    // setTimeout(() => vis.updateVis(nodes, links), 2000)
   }
 
   render() {
@@ -111,6 +86,5 @@ class D3GraphVis extends React.Component {
     )
   }
 }
-
 
 export default withFauxDOM(D3GraphVis)
