@@ -35,9 +35,14 @@
     }
 
 
-    #key-association { color: darkred }
-    #key-entity { color: skyblue }
-    #key-property { color: #525252 }// grey
+    #key-association { color: darkred; }
+    #key-entity { color: skyblue; }
+    #key-property { color: #525252;  } // grey
+
+    .key-entry { 
+      display: inline-block;
+      padding-right: 5px;
+     }
     
   }
   

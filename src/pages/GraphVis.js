@@ -3,7 +3,7 @@ import GraphVis from '../containers/GraphVis'
 
 const WeatherPage = () =>
   <main>
-    <h3>Graph of EDM</h3>
+    <h2>Graph of EDM</h2>
     <GraphVis />
   </main>
 

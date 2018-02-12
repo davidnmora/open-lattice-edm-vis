@@ -1,4 +1,5 @@
 import * as d3 from 'd3'
+
 const DynamicGraph = (d3SelectedVisContainer, optionalPubVars) => {
   // 1. GLOBAL VARIALBES -------------------------------------------------------------------------
   // Public variables width default settings
@@ -39,13 +40,12 @@ const DynamicGraph = (d3SelectedVisContainer, optionalPubVars) => {
     .style("opacity", 0)
 
   const displayNodeTooltip = d => {
-    console.log(d)
     tooltip.transition()
       .duration(200)
       .style("opacity", .9)
     tooltip.html(pubVar.tooltipInnerHTML(d))
-      .style("left", (d3.event.pageX) + "px")
-      .style("top", (d3.event.pageY - 28) + "px")
+      .style("left", (d3.event.pageX + 10) + "px")
+      .style("top", (d3.event.pageY - 40) + "px")
   }
 
   const removeNodeTooltip = d => {
@@ -116,9 +116,7 @@ const DynamicGraph = (d3SelectedVisContainer, optionalPubVars) => {
       .attr("cy", d => d.y = Math.max(d.radius, Math.min(pubVar.height - d.radius, d.y)))
   }
 
-  // 5. GRAPH VIS HELPER FUNCTIONS -------------------------------------------------------------------------
-
-  // 5. UPDATE GRAPH AFTER FILTERING DATA -------------------------------------------------------------------------
+  // UPDATE GRAPH AFTER FILTERING DATA -------------------------------------------------------------------------
   function updateVis(nodes, links) {
     // Initialize layout simulation at startup
     if(!simulation) { 
@@ -153,7 +151,7 @@ const DynamicGraph = (d3SelectedVisContainer, optionalPubVars) => {
       nodes.forEach(d => { d.x = d.cx = d.y = d.cy = pubVar.nodeStartPos(d)})
     }
 
-    // Apply the general update pattern to the nodes.
+    // Apply the general D3 update pattern to the nodes.
     node = node.data(nodes, d => d.id) 
 
     node
@@ -167,7 +165,7 @@ const DynamicGraph = (d3SelectedVisContainer, optionalPubVars) => {
       .append("circle")
       .attr("class", "node")
       .attr("fill", pubVar.nodeColor)
-      .style("opacity", pubVar.nodeOpacity)
+      .style("opacity", pubVar.unfocusOpacity)
       .on("mouseover", node => {
         displayNodeTooltip(node)
         changeNodeFocus(node, links, true)
@@ -195,7 +193,7 @@ const DynamicGraph = (d3SelectedVisContainer, optionalPubVars) => {
       )
       .merge(node)
 
-    // Apply the general update pattern to the links.
+    // Apply the general D3 update pattern to the links.
     // Keep the exiting links connected to the moving remaining nodes.
     link.exit().transition().duration(pubVar.transitionTime)
       .attr("stroke-opacity", 0)
@@ -268,7 +266,7 @@ const DynamicGraph = (d3SelectedVisContainer, optionalPubVars) => {
     return _DynamicGraph
   }
 
-  return _DynamicGraph // for future api calls, method chaining
+  return _DynamicGraph // For future api calls and method chaining
 }
 
 export default DynamicGraph

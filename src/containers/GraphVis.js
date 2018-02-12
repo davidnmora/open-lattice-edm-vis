@@ -55,7 +55,7 @@ class GraphVis extends React.Component {
 }
 
 export default connect(
-  // "mapStateToProps" (mapSTOREtoProps)
+  // "mapStateToProps" (better name: mapSTOREtoProps)
   state => ({
     graphvisState: state.graphvisReducerState
   }),

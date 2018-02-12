@@ -17,7 +17,6 @@ export const getWeather = () => dispatch => {
   try {
     const edmPromises = urls.map(url => fetch(url).then(response => response.json()));
     Promise.all(edmPromises).then(edmJsons => {
-      console.log(edmJsons)
       let graphData = {
         nodes: [],
         links: [],
@@ -28,14 +27,11 @@ export const getWeather = () => dispatch => {
       graphData.nodes = Object.values(graphData.nodesById)
       // ERROR PREVENTION: in the event an id is listed as a property/src/dst, but doesn't exist, purge it (there seems to be 4 such ids)
       graphData.links = graphData.links.filter(link => (link.source in graphData.nodesById) && (link.target in graphData.nodesById))
-      console.log(graphData)
-      // console.log(JSON.stringify(graphData))
       dispatch(showWeather(graphData)) 
     });
     
   } catch (e) {
     console.error(e)
-    // TO DO: display error
   }
 }
 
@@ -65,9 +61,8 @@ const addJSONToGraph = (graphData, entityJSON) => {
 }
 
 const addLink = (sourceId, targetId, links) => {
-  // Formatting: some Associations have src/dst: [id]
+  // Formatting: some Associations have src/dst: [id] (do some entities have MULTIPE src/dst?)
   if (sourceId instanceof Array) sourceId = sourceId[0]
   if (targetId instanceof Array) targetId = targetId[0]
-  // TO DO: do some entities have MULTIPE src/dst?
   links.push({ source: sourceId, target: targetId })
 }

@@ -46,7 +46,7 @@ class D3GraphVis extends React.Component {
 
     // Tooltip display
     const tooltipInnerHTML = node => {
-      return getNodeInfo(node).title
+      return "TITLE: " + getNodeInfo(node).title + "<br>DESCRIPTION: " + getNodeInfo(node).description  
     }
 
     // PROJECT SPECIFIC HELPERS
@@ -78,7 +78,7 @@ class D3GraphVis extends React.Component {
       .tooltipInnerHTML(tooltipInnerHTML)
       .updateVis(nodes, links)
 
-    // Test updating vis (filter out half the nodes)
+    // FOR TESTING GRAPH UPDATE: Test updating vis (filter out half the nodes)
     // nodes = graph.nodes.filter(node => shouldKeepNode(node))
     // links = graph.links.filter(link => shouldKeepLink(graph.nodesById, link))
     // setTimeout(() => vis.updateVis(nodes, links), 2000)
@@ -88,9 +88,10 @@ class D3GraphVis extends React.Component {
     return (
       <div>
         <div id="vis-key">
+          <p>Drag nodes to re-arrange the graph. Hover nodes to highlight their nearest neighbors. Click a node to persist highlighting its nearest neighbors, and click the node again to cancel the highlighting.</p>
           <p>Nodes are sized by degree, and colored by EDM DataType:</p>
-          <h3 id="key-property"    className="key-entry">Property</h3>
-          <h3 id="key-entity"      className="key-entry">Entity</h3>
+          <h3 id="key-property"    className="key-entry">Property,</h3>
+          <h3 id="key-entity"      className="key-entry">Entity,</h3>
           <h3 id="key-association" className="key-entry">Association</h3>
         </div>
         <div className='renderedD3'></div>
