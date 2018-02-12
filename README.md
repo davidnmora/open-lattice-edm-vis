@@ -1,13 +1,9 @@
-# [![OpenLattice EDM Vis]](https://yingray.github.io/create-react-redux-app/)
+# OpenLattice EDM Graph Vis
 
 This project was bootstrapped with Create React App and Redux, Sass Structure.
 
-Project boilerplate from 
-[![Create React Redux App]](https://yingray.github.io/create-react-redux-app/)
-
-# Graph Visualization
-
-* Graph
+Find the starter template I used here: 
+[Create React Redux App](https://yingray.github.io/create-react-redux-app/)
 
 ## Dependencies
 
