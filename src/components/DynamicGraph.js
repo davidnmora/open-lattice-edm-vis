@@ -183,7 +183,7 @@ const DynamicGraph = (d3SelectedVisContainer, optionalPubVars) => {
         if (!node.clicked) {
           removeNodeTooltip(node)
           changeNodeFocus(node, links, false)
-        }   
+        }
       })
       .call(node => { node.transition().duration(pubVar.transitionTime).attr("r", node => node.radius); })
       .call(

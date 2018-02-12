@@ -7,7 +7,7 @@ class D3GraphVis extends React.Component {
     // CUSTOM FILTERING AND DATA PROCESSING FUNCTIONS -------------------------------------------------------------------------
     const setNodeRadiusAndDegree = (node, graph) => {
       const minRadius = 7,
-      scaleRadiusDownBy = 5
+        scaleRadiusDownBy = 5
       if (node.radius !== undefined) return node.radius
       node.degree = graph.links.filter(l => {
         return l.source == node.id || l.target == node.id
@@ -24,14 +24,20 @@ class D3GraphVis extends React.Component {
     }
 
     // Set node color based on type
+    const nodeColorKey = {
+      association: "darkred",
+      entity: "skyblue",
+      property: "#525252" // grey
+    }
+    
     const nodeColor = node => {
       switch (getNodeInfo(node).category) {
         case "AssociationType":
-          return "darkred"
+          return nodeColorKey.association
         case "EntityType":
-          return "skyblue"
-        case undefined:
-          return "#525252"
+          return nodeColorKey.entity
+        case undefined: // Property doesn't have a category entry
+          return nodeColorKey.property
         default:
           console.error("ERROR: node improperly typed: ", node)
           return "red"
@@ -67,7 +73,7 @@ class D3GraphVis extends React.Component {
     // Launch vis
     let nodes = graph.nodes
     let links = graph.links
-    let vis = DynamicGraph(d3.select("body" /*faux to attempt React integration*/), { width: window.innerWidth, height: 700 })
+    let vis = DynamicGraph(d3.select("body" /*TO DO: actually integrate with React */), { width: window.innerWidth, height: 700 })
       .nodeColor(nodeColor)
       .tooltipInnerHTML(tooltipInnerHTML)
       .updateVis(nodes, links)
@@ -81,10 +87,16 @@ class D3GraphVis extends React.Component {
   render() {
     return (
       <div>
+        <div id="vis-key">
+          <p>Nodes are sized by degree, and colored by EDM DataType:</p>
+          <h3 id="key-property"    className="key-entry">Property</h3>
+          <h3 id="key-entity"      className="key-entry">Entity</h3>
+          <h3 id="key-association" className="key-entry">Association</h3>
+        </div>
         <div className='renderedD3'></div>
       </div>
     )
   }
 }
 
-export default withFauxDOM(D3GraphVis)
+export default D3GraphVis
